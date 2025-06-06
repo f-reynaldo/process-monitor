@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/baobab">
+    <file preprocess="xml-stripblanks">ui/baobab-process-window.ui</file>
+    <file preprocess="xml-stripblanks">ui/baobab-chart-menu.ui</file>
+    <file>ui/baobab-chart.css</file>
+  </gresource>
+</gresources>
+

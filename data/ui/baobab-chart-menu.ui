@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="chart-menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Refresh</attribute>
+        <attribute name="action">win.refresh</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
+

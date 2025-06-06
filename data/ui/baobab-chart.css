@@ -1,0 +1,56 @@
+@define-color chart-fill rgb(74, 144, 217);
+@define-color chart-stroke rgb(255, 255, 255);
+@define-color chart-text rgb(255, 255, 255);
+@define-color chart-description rgb(200, 200, 200);
+
+@define-color chart-highlight rgb(94, 164, 237);
+@define-color chart-highlight-stroke rgb(255, 255, 255);
+@define-color chart-highlight-text rgb(255, 255, 255);
+@define-color chart-highlight-description rgb(200, 200, 200);
+
+@define-color chart-clicked rgb(114, 184, 255);
+@define-color chart-clicked-stroke rgb(255, 255, 255);
+@define-color chart-clicked-text rgb(255, 255, 255);
+@define-color chart-clicked-description rgb(200, 200, 200);
+
+@define-color chart-level-0 rgb(74, 144, 217);
+@define-color chart-level-1 rgb(85, 165, 230);
+@define-color chart-level-2 rgb(96, 186, 243);
+@define-color chart-level-3 rgb(107, 207, 250);
+@define-color chart-level-4 rgb(118, 228, 235);
+@define-color chart-level-5 rgb(129, 249, 220);
+@define-color chart-level-6 rgb(140, 220, 205);
+@define-color chart-level-7 rgb(151, 191, 190);
+@define-color chart-level-8 rgb(162, 162, 175);
+@define-color chart-level-9 rgb(173, 133, 160);
+
+@define-color chart-max-depth rgb(173, 133, 160);
+@define-color chart-max-depth-stroke rgb(255, 255, 255);
+@define-color chart-max-depth-text rgb(255, 255, 255);
+@define-color chart-max-depth-description rgb(200, 200, 200);
+
+@define-color chart-max-depth-highlight rgb(193, 153, 180);
+@define-color chart-max-depth-highlight-stroke rgb(255, 255, 255);
+@define-color chart-max-depth-highlight-text rgb(255, 255, 255);
+@define-color chart-max-depth-highlight-description rgb(200, 200, 200);
+
+@define-color chart-max-depth-clicked rgb(213, 173, 200);
+@define-color chart-max-depth-clicked-stroke rgb(255, 255, 255);
+@define-color chart-max-depth-clicked-text rgb(255, 255, 255);
+@define-color chart-max-depth-clicked-description rgb(200, 200, 200);
+
+@define-color chart-not-allocated rgb(200, 200, 200);
+@define-color chart-not-allocated-stroke rgb(255, 255, 255);
+@define-color chart-not-allocated-text rgb(255, 255, 255);
+@define-color chart-not-allocated-description rgb(200, 200, 200);
+
+@define-color chart-not-allocated-highlight rgb(220, 220, 220);
+@define-color chart-not-allocated-highlight-stroke rgb(255, 255, 255);
+@define-color chart-not-allocated-highlight-text rgb(255, 255, 255);
+@define-color chart-not-allocated-highlight-description rgb(200, 200, 200);
+
+@define-color chart-not-allocated-clicked rgb(240, 240, 240);
+@define-color chart-not-allocated-clicked-stroke rgb(255, 255, 255);
+@define-color chart-not-allocated-clicked-text rgb(255, 255, 255);
+@define-color chart-not-allocated-clicked-description rgb(200, 200, 200);
+
