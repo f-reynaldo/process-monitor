@@ -29,15 +29,9 @@ namespace Baobab {
         [GtkChild]
         private unowned Gtk.EventControllerFocus focus_controller;
         [GtkChild]
-        private unowned Adw.NavigationView nav_view;
-        [GtkChild]
         private unowned Gtk.Widget home_page;
         [GtkChild]
         private unowned Gtk.Widget result_page;
-        [GtkChild]
-        private unowned Adw.ToastOverlay toast_overlay;
-        [GtkChild]
-        private unowned Adw.Banner banner;
         [GtkChild]
         private unowned Gtk.ColumnView columnview;
         [GtkChild]
@@ -48,11 +42,7 @@ namespace Baobab {
         private ProcessScanner scanner;
         private Gtk.TreeListModel tree_model;
         private Gtk.SortListModel sort_model;
-        private Gtk.ColumnViewColumn name_column;
-        private Gtk.ColumnViewColumn memory_column;
-
         private Gtk.StringList chart_model;
-        private Gtk.NoSelection chart_selection;
 
         private uint refresh_timeout_id = 0;
 
@@ -80,78 +70,90 @@ namespace Baobab {
         }
 
         private void setup_column_view () {
-            name_column = new Gtk.ColumnViewColumn (_("Process"));
+            var name_factory = new Gtk.SignalListItemFactory();
+            name_factory.setup.connect((factory, list_item) => {
+                var cell = new ProcessCell();
+                list_item.set_child(cell);
+            });
+            
+            name_factory.bind.connect((factory, list_item) => {
+                var cell = list_item.get_child() as ProcessCell;
+                var tree_list_row = list_item.get_item() as Gtk.TreeListRow;
+                var results = tree_list_row != null ? tree_list_row.get_item() as ProcessScanner.Results : null;
+                if (results != null) {
+                    cell.update(results);
+                }
+            });
+            
+            var name_column = new Gtk.ColumnViewColumn(_("Process"), name_factory);
             name_column.expand = true;
-            name_column.factory = new Gtk.SignalListItemFactory ();
-            name_column.factory.setup.connect ((factory, list_item) => {
-                var cell = new ProcessCell ();
-                list_item.child = cell;
+            columnview.append_column(name_column);
+
+            var memory_factory = new Gtk.SignalListItemFactory();
+            memory_factory.setup.connect((factory, list_item) => {
+                var cell = new MemoryCell();
+                list_item.set_child(cell);
             });
-            name_column.factory.bind.connect ((factory, list_item) => {
-                var cell = list_item.child as ProcessCell;
-                var tree_list_row = list_item.item as Gtk.TreeListRow;
-                var results = tree_list_row != null ? tree_list_row.item as ProcessScanner.Results : null;
+            
+            memory_factory.bind.connect((factory, list_item) => {
+                var cell = list_item.get_child() as MemoryCell;
+                var tree_list_row = list_item.get_item() as Gtk.TreeListRow;
+                var results = tree_list_row != null ? tree_list_row.get_item() as ProcessScanner.Results : null;
                 if (results != null) {
-                    cell.update (results);
+                    cell.update(results);
                 }
             });
-            columnview.append_column (name_column);
+            
+            var memory_column = new Gtk.ColumnViewColumn(_("Memory"), memory_factory);
+            columnview.append_column(memory_column);
 
-            memory_column = new Gtk.ColumnViewColumn (_("Memory"));
-            memory_column.factory = new Gtk.SignalListItemFactory ();
-            memory_column.factory.setup.connect ((factory, list_item) => {
-                var cell = new MemoryCell ();
-                list_item.child = cell;
-            });
-            memory_column.factory.bind.connect ((factory, list_item) => {
-                var cell = list_item.child as MemoryCell;
-                var tree_list_row = list_item.item as Gtk.TreeListRow;
-                var results = tree_list_row != null ? tree_list_row.item as ProcessScanner.Results : null;
-                if (results != null) {
-                    cell.update (results);
-                }
-            });
-            columnview.append_column (memory_column);
-
-            var sorter = new Gtk.TreeListRowSorter (new ProcessMemorySorter ());
-            sort_model = new Gtk.SortListModel (null, sorter);
-            columnview_selection.model = sort_model;
+            var sorter = new Gtk.TreeListRowSorter(new ProcessMemorySorter());
+            sort_model = new Gtk.SortListModel(null, sorter);
+            columnview_selection.set_model(sort_model);
         }
 
-        private void setup_chart () {
-            chart_model = new Gtk.StringList (null);
-            chart_selection = new Gtk.NoSelection (chart_model);
-            chart.model = chart_selection;
+        private void setup_chart() {
+            chart_model = new Gtk.StringList(null);
+            chart.model = chart_model;
         }
 
-        private void start_scan () {
-            scanner.cancel ();
-            scanner.scan ();
-            nav_view.push (home_page);
+        private void start_scan() {
+            scanner.cancel();
+            scanner.scan();
+            // Use stack instead of NavigationView
+            var stack = home_page.get_parent() as Gtk.Stack;
+            if (stack != null) {
+                stack.set_visible_child(home_page);
+            }
         }
 
-        private void on_scanner_completed () {
+        private void on_scanner_completed() {
             if (scanner.root == null) {
                 return;
             }
 
-            tree_model = scanner.root.create_tree_model ();
-            sort_model.model = tree_model;
+            tree_model = scanner.root.create_tree_model();
+            sort_model.set_model(tree_model);
 
             // Update chart with top processes
-            chart_model.splice (0, chart_model.get_n_items (), null);
+            chart_model.splice(0, chart_model.get_n_items(), null);
             
             // Get top processes by memory usage
-            var processes = new Gee.ArrayList<ProcessScanner.Results> ();
-            for (uint i = 0; i < scanner.root.children_list_store.get_n_items (); i++) {
-                var results = scanner.root.children_list_store.get_item (i) as ProcessScanner.Results;
-                if (results != null) {
-                    processes.add (results);
-                }
+            var processes = new Gee.ArrayList<ProcessScanner.Results>();
+            TreeIter iter;
+            if (scanner.root.children_list_store.get_iter_first(out iter)) {
+                do {
+                    Value val;
+                    scanner.root.children_list_store.get_value(iter, 0, out val);
+                    Results? results = val.get_object() as Results;
+                    if (results != null) {
+                        processes.add(results);
+                    }
+                } while (scanner.root.children_list_store.iter_next(ref iter));
             }
             
             // Sort by memory usage
-            processes.sort ((a, b) => {
+            processes.sort((a, b) => {
                 if (a.memory_usage > b.memory_usage) {
                     return -1;
                 } else if (a.memory_usage < b.memory_usage) {
@@ -167,26 +169,30 @@ namespace Baobab {
                 if (count >= 10) {
                     break;
                 }
-                chart_model.append (results.display_name);
+                chart_model.append(results.display_name);
                 count++;
             }
 
-            nav_view.push (result_page);
+            // Use stack instead of NavigationView
+            var stack = result_page.get_parent() as Gtk.Stack;
+            if (stack != null) {
+                stack.set_visible_child(result_page);
+            }
         }
 
         [GtkCallback]
-        private void on_scan_button_clicked () {
-            start_scan ();
+        private void on_scan_button_clicked() {
+            start_scan();
         }
 
         [GtkCallback]
-        private void on_stop_button_clicked () {
-            scanner.cancel ();
+        private void on_stop_button_clicked() {
+            scanner.cancel();
         }
     }
 
     private class ProcessMemorySorter : Gtk.Sorter {
-        public override Gtk.Ordering compare (Object? a, Object? b) {
+        public override Gtk.Ordering compare(Object? a, Object? b) {
             var row_a = a as Gtk.TreeListRow;
             var row_b = b as Gtk.TreeListRow;
 
@@ -194,8 +200,8 @@ namespace Baobab {
                 return Gtk.Ordering.EQUAL;
             }
 
-            var results_a = row_a.item as ProcessScanner.Results;
-            var results_b = row_b.item as ProcessScanner.Results;
+            var results_a = row_a.get_item() as ProcessScanner.Results;
+            var results_b = row_b.get_item() as ProcessScanner.Results;
 
             if (results_a == null || results_b == null) {
                 return Gtk.Ordering.EQUAL;
@@ -210,7 +216,7 @@ namespace Baobab {
             }
         }
 
-        public override Gtk.SorterOrder get_order () {
+        public override Gtk.SorterOrder get_order() {
             return Gtk.SorterOrder.PARTIAL;
         }
     }

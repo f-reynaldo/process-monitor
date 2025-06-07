@@ -44,40 +44,16 @@ namespace Baobab {
         const int ITEM_FONT_SIZE = 12;
         const int ITEM_DESCRIPTION_FONT_SIZE = 10;
         const int ITEM_DESCRIPTION_FONT_WEIGHT = 400;
-        const int ITEM_DESCRIPTION_FONT_SCALE = 0.8;
+        const double ITEM_DESCRIPTION_FONT_SCALE = 0.8;
         const int ITEM_DESCRIPTION_MAX_LINES = 2;
         const int ITEM_DESCRIPTION_MAX_CHARS = 20;
         const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE = 20;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_LONG = 40;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_LONG = 60;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_LONG = 80;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_LONG = 100;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_LONG = 120;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_LONG = 140;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 160;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 180;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 200;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 220;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 240;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 260;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 280;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 300;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 320;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 340;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 360;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 380;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 400;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 420;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 440;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 460;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 480;
-        const int ITEM_DESCRIPTION_MAX_CHARS_LAST_LINE_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_VERY_LONG = 500;
 
         protected override ChartItem create_chart_item() {
             return new RingschartItem();
         }
 
-        protected override void draw_chart_items(Cairo.Context cr, int width, int height) {
+        protected override void draw_chart(Gtk.DrawingArea area, Cairo.Context cr, int width, int height) {
             if (items == null) {
                 return;
             }
@@ -216,45 +192,29 @@ namespace Baobab {
                     cr.restore();
                 }
             }
-        }
-
-        protected override ChartItem? get_item_at_position(int x, int y) {
-            if (items == null) {
-                return null;
+            
+            // Draw the model string in the center
+            if (model_string != null && model_string.length > 0) {
+                cr.save();
+                
+                var layout = create_pango_layout(null);
+                layout.set_text(model_string, -1);
+                layout.set_width(radius * Pango.SCALE);
+                layout.set_alignment(Pango.Alignment.CENTER);
+                
+                Pango.FontDescription font_desc = new Pango.FontDescription();
+                font_desc.set_size(HEADER_FONT_SIZE * Pango.SCALE);
+                layout.set_font_description(font_desc);
+                
+                int text_width, text_height;
+                layout.get_pixel_size(out text_width, out text_height);
+                
+                cr.set_source_rgb(color_text.red, color_text.green, color_text.blue);
+                cr.move_to(cx - text_width / 2, cy - text_height / 2);
+                
+                Pango.cairo_show_layout(cr, layout);
+                cr.restore();
             }
-
-            int width = get_width();
-            int height = get_height();
-            int cx = width / 2;
-            int cy = height / 2;
-
-            double dx = x - cx;
-            double dy = y - cy;
-            double distance = Math.sqrt(dx * dx + dy * dy);
-            double angle = Math.atan2(dy, dx);
-
-            if (angle < 0) {
-                angle += 2 * Math.PI;
-            }
-
-            foreach (var item in items) {
-                var ringschart_item = item as RingschartItem;
-
-                if (!ringschart_item.visible) {
-                    continue;
-                }
-
-                if (distance >= ringschart_item.min_radius && distance <= ringschart_item.max_radius) {
-                    double start_angle = ringschart_item.start_angle;
-                    double end_angle = start_angle + ringschart_item.angle;
-
-                    if (start_angle <= angle && angle <= end_angle) {
-                        return item;
-                    }
-                }
-            }
-
-            return null;
         }
     }
 }

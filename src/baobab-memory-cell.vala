@@ -1,9 +1,6 @@
 /* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* Baobab - process memory usage analyzer
  *
- * Modified from original baobab-size-cell.vala
- * Original copyright:
- * Copyright (C) 2012  Ryan Lortie <desrt@desrt.ca>
  * Copyright (C) 2012  Paolo Borelli <pborelli@gnome.org>
  * Copyright (C) 2012  Stefano Facchini <stefano.facchini@gmail.com>
  *
@@ -23,28 +20,49 @@
  */
 
 namespace Baobab {
+
     public class MemoryCell : Gtk.Box {
-        private Gtk.Label memory_label;
+        private Gtk.Label size_label;
         private Gtk.Label percent_label;
 
-        public MemoryCell () {
-            Object (orientation: Gtk.Orientation.HORIZONTAL, spacing: 6);
+        construct {
+            orientation = Gtk.Orientation.HORIZONTAL;
+            spacing = 6;
+            margin_start = 6;
+            margin_end = 6;
+            margin_top = 3;
+            margin_bottom = 3;
 
-            memory_label = new Gtk.Label (null);
-            memory_label.xalign = 1.0f;
-            memory_label.width_chars = 10;
-            memory_label.get_style_context ().add_class ("dim-label");
-            this.append (memory_label);
+            size_label = new Gtk.Label (null);
+            size_label.xalign = 0;
+            size_label.hexpand = true;
+            append (size_label);
 
             percent_label = new Gtk.Label (null);
-            percent_label.xalign = 1.0f;
-            percent_label.width_chars = 6;
-            this.append (percent_label);
+            percent_label.xalign = 1;
+            append (percent_label);
         }
 
         public void update (ProcessScanner.Results results) {
-            memory_label.label = format_size (results.memory_usage);
+            size_label.label = format_size (results.memory_usage);
             percent_label.label = "%.1f%%".printf (results.percent);
+        }
+
+        private string format_size (uint64 size) {
+            string[] units = { "B", "KB", "MB", "GB", "TB" };
+            double dsize = (double) size;
+            int unit = 0;
+
+            while (dsize >= 1024 && unit < units.length - 1) {
+                dsize /= 1024;
+                unit++;
+            }
+
+            if (unit == 0) {
+                return "%.0f %s".printf (dsize, units[unit]);
+            } else {
+                return "%.1f %s".printf (dsize, units[unit]);
+            }
         }
     }
 }

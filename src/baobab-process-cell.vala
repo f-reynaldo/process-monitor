@@ -1,9 +1,6 @@
 /* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* Baobab - process memory usage analyzer
  *
- * Modified from original baobab-file-cell.vala
- * Original copyright:
- * Copyright (C) 2012  Ryan Lortie <desrt@desrt.ca>
  * Copyright (C) 2012  Paolo Borelli <pborelli@gnome.org>
  * Copyright (C) 2012  Stefano Facchini <stefano.facchini@gmail.com>
  *
@@ -23,32 +20,38 @@
  */
 
 namespace Baobab {
+
     public class ProcessCell : Gtk.Box {
+        private Gtk.Image icon;
         private Gtk.Label name_label;
         private Gtk.Label pid_label;
 
-        public ProcessCell () {
-            Object (orientation: Gtk.Orientation.HORIZONTAL, spacing: 6);
+        construct {
+            orientation = Gtk.Orientation.HORIZONTAL;
+            spacing = 6;
+            margin_start = 6;
+            margin_end = 6;
+            margin_top = 3;
+            margin_bottom = 3;
+
+            icon = new Gtk.Image.from_icon_name ("application-x-executable");
+            icon.pixel_size = 16;
+            append (icon);
 
             name_label = new Gtk.Label (null);
-            name_label.xalign = 0.0f;
-            name_label.ellipsize = Pango.EllipsizeMode.END;
+            name_label.xalign = 0;
             name_label.hexpand = true;
-            this.append (name_label);
+            append (name_label);
 
             pid_label = new Gtk.Label (null);
-            pid_label.xalign = 1.0f;
-            pid_label.get_style_context ().add_class ("dim-label");
-            this.append (pid_label);
+            pid_label.xalign = 1;
+            pid_label.css_classes = { "dim-label" };
+            append (pid_label);
         }
 
         public void update (ProcessScanner.Results results) {
             name_label.label = results.display_name;
-            if (results.pid > 0) {
-                pid_label.label = "[%d]".printf (results.pid);
-            } else {
-                pid_label.label = "";
-            }
+            pid_label.label = results.pid.to_string ();
         }
     }
 }
