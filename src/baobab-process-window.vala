@@ -140,12 +140,12 @@ namespace Baobab {
             
             // Get top processes by memory usage
             var processes = new Gee.ArrayList<ProcessScanner.Results>();
-            TreeIter iter;
+            Gtk.TreeIter iter;
             if (scanner.root.children_list_store.get_iter_first(out iter)) {
                 do {
                     Value val;
                     scanner.root.children_list_store.get_value(iter, 0, out val);
-                    Results? results = val.get_object() as Results;
+                    ProcessScanner.Results? results = val.get_object() as ProcessScanner.Results;
                     if (results != null) {
                         processes.add(results);
                     }

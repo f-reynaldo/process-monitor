@@ -178,7 +178,7 @@ namespace Baobab {
             }
 
             var style_context = get_style_context();
-            style_context.changed.connect(on_style_changed);
+            style_context.notify["changed"].connect(on_style_changed);
             
             // Initialize colors
             on_style_changed();
@@ -292,12 +292,12 @@ namespace Baobab {
 
                 // Sort children by size
                 var children = new List<ProcessScanner.Results>();
-                TreeIter iter;
+                Gtk.TreeIter iter;
                 if (item.results.children_list_store.get_iter_first(out iter)) {
                     do {
                         Value val;
                         item.results.children_list_store.get_value(iter, 0, out val);
-                        Results? child = val.get_object() as Results;
+                        ProcessScanner.Results? child = val.get_object() as ProcessScanner.Results;
                         if (child != null) {
                             children.append(child);
                         }

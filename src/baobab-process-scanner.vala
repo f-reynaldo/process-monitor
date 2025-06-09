@@ -35,7 +35,7 @@ namespace Baobab {
             public bool is_empty {
                 get { 
                     bool empty = true;
-                    TreeIter iter;
+                    Gtk.TreeIter iter;
                     if (children_list_store.get_iter_first(out iter)) {
                         empty = false;
                     }
@@ -49,15 +49,14 @@ namespace Baobab {
                 this.pid = pid;
                 this.memory_usage = memory_usage;
                 this.percent = 0.0;
-                this.children_list_store = new Gtk.ListStore (typeof (Results));
+                this.children_list_store = new Gtk.ListStore (1, typeof (Results));
             }
 
             public Gtk.TreeListModel create_tree_model () {
-                var list_model = new Gtk.TreeModelListStore(children_list_store);
-                return new Gtk.TreeListModel (list_model, false, true, (item) => {
-                    var results = item as Results;
+                return new Gtk.TreeListModel (children_list_store, false, true, (item) => {
+                    var results = item as ProcessScanner.Results;
                     if (results != null && !results.is_empty) {
-                        return new Gtk.TreeModelListStore(results.children_list_store);
+                        return results.children_list_store;
                     }
                     return null;
                 });
@@ -126,12 +125,12 @@ namespace Baobab {
             // Calculate percentages
             uint64 total_memory = root.memory_usage;
             if (total_memory > 0) {
-                TreeIter iter;
+                Gtk.TreeIter iter;
                 if (root.children_list_store.get_iter_first(out iter)) {
                     do {
                         Value val;
                         root.children_list_store.get_value(iter, 0, out val);
-                        Results? results = val.get_object() as Results;
+                        ProcessScanner.Results? results = val.get_object() as ProcessScanner.Results;
                         if (results != null) {
                             results.percent = (double)results.memory_usage / total_memory * 100.0;
                         }
@@ -200,7 +199,7 @@ namespace Baobab {
                 // Add the process to the root
                 if (memory_usage > 0) {
                     var results = new Results (display_name, process_name, pid, memory_usage);
-                    TreeIter iter;
+                    Gtk.TreeIter iter;
                     root.children_list_store.append(out iter);
                     root.children_list_store.set(iter, 0, results);
                     root.memory_usage += memory_usage;

@@ -4,46 +4,50 @@ project('process-monitor', ['c', 'vala'],
   license: 'GPL2+'
 )
 
+# Import gnome module
 gnome = import('gnome')
-i18n = import('i18n')
 
-glib = dependency('glib-2.0', version: '>= 2.44')
-gio = dependency('gio-2.0', version: '>= 2.44')
-gobject = dependency('gobject-2.0', version: '>= 2.44')
-gtk = dependency('gtk4', version: '>= 4.0')
-libadwaita = dependency('libadwaita-1', version: '>= 1.0')
-gee = dependency('gee-0.8', version: '>= 0.8.5')
-math = meson.get_compiler('c').find_library('m', required: false)
+# Dependencies
+glib_dep = dependency('glib-2.0', version: '>= 2.44')
+gio_dep = dependency('gio-2.0')
+gobject_dep = dependency('gobject-2.0')
+gtk_dep = dependency('gtk4')
+adwaita_dep = dependency('libadwaita-1')
+gee_dep = dependency('gee-0.8')
+math_dep = meson.get_compiler('c').find_library('m', required: false)
 
+# Configuration
 conf = configuration_data()
-conf.set_quoted('GETTEXT_PACKAGE', 'process-monitor')
-conf.set_quoted('GNOMELOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
-conf.set_quoted('VERSION', meson.project_version())
+conf.set_quoted('PACKAGE_NAME', meson.project_name())
+conf.set_quoted('PACKAGE_VERSION', meson.project_version())
+conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+conf.set_quoted('LOCALEDIR', get_option('prefix') / get_option('localedir'))
 
 configure_file(
   output: 'config.h',
   configuration: conf
 )
 
-config_h_dir = include_directories('.')
-
+# Resources
 resource_files = files(
   'data/ui/baobab-process-window.ui',
   'data/ui/baobab-chart-menu.ui',
   'data/ui/baobab-chart.css'
 )
 
-resources = gnome.compile_resources('process-monitor-resources',
+resources = gnome.compile_resources(
+  'process-monitor-resources',
   'data/process-monitor.gresource.xml',
-  dependencies: resource_files,
   source_dir: 'data',
-  c_name: 'resources'
+  dependencies: resource_files
 )
 
+# VAPI sources
 vapi_sources = [
   'src/config.vapi',
 ]
 
+# Vala sources
 process_monitor_vala_sources = [
   'src/baobab-chart.vala',
   'src/baobab-ringschart.vala',
@@ -52,43 +56,33 @@ process_monitor_vala_sources = [
   'src/baobab-process-cell.vala',
   'src/baobab-process-scanner.vala',
   'src/baobab-process-window.vala',
-  'src/process-main.vala',
+  'src/process-main.vala'
 ]
 
-process_monitor_sources = [
-  vapi_sources,
-  process_monitor_vala_sources,
-  resources
-]
-
+# Vala arguments
 process_monitor_vala_args = [
   '--target-glib', '2.44',
   '--vapidir', meson.current_source_dir() / 'src',
-  '--vapidir', '/usr/share/vala/vapi',
-  '--pkg', 'libadwaita-1',
-  '--gresources', meson.current_source_dir() / 'data/process-monitor.gresource.xml'
+  '--gresources', meson.current_source_dir() / 'data/process-monitor.gresource.xml',
+  '--pkg', 'pangocairo'
 ]
 
-process_monitor_c_args = [
-  '-include', 'config.h'
+# Dependencies list
+process_monitor_deps = [
+  glib_dep,
+  gio_dep,
+  gobject_dep,
+  gtk_dep,
+  adwaita_dep,
+  gee_dep,
+  math_dep
 ]
 
-process_monitor_dependencies = [
-  glib,
-  gio,
-  gobject,
-  gtk,
-  libadwaita,
-  math,
-  gee
-]
-
-executable('process-monitor', process_monitor_sources,
-  include_directories: config_h_dir,
+# Executable
+executable('process-monitor',
+  vapi_sources + process_monitor_vala_sources + [resources],
+  dependencies: process_monitor_deps,
   vala_args: process_monitor_vala_args,
-  c_args: process_monitor_c_args,
-  dependencies: process_monitor_dependencies,
-  export_dynamic: true,
   install: true
 )
 
