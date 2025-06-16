@@ -53,10 +53,10 @@ namespace Baobab {
             }
 
             public Gtk.TreeListModel create_tree_model () {
-                return new Gtk.TreeListModel (children_list_store, false, true, (item) => {
+                return new Gtk.TreeListModel (children_list_store as GLib.ListModel, false, true, (item) => {
                     var results = item as ProcessScanner.Results;
                     if (results != null && !results.is_empty) {
-                        return results.children_list_store;
+                        return results.children_list_store as GLib.ListModel;
                     }
                     return null;
                 });

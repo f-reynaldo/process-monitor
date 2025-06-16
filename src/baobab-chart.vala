@@ -7,9 +7,9 @@
  * Copyright (C) 2013  Stefano Facchini <stefano.facchini@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +21,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA  02110-1301  USA
  */
+
+using PangoCairo;
 
 namespace Baobab {
 
@@ -170,7 +172,7 @@ namespace Baobab {
             css_provider.load_from_resource("/org/gnome/baobab/ui/baobab-chart.css");
             Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-            layout = create_pango_layout(null);
+            layout = new Pango.Layout(create_pango_context());
 
             color_levels = new Gdk.RGBA[10];
             for (int i = 0; i < 10; i++) {
@@ -251,7 +253,7 @@ namespace Baobab {
             return Gdk.RGBA();
         }
 
-        private unowned List<ChartItem> add_item(uint depth, double rel_start, double rel_size, ProcessScanner.Results results) {
+        private ChartItem add_item(uint depth, double rel_start, double rel_size, ProcessScanner.Results results) {
             var item = create_chart_item();
             item.depth = depth;
             item.rel_start = rel_start;
@@ -262,7 +264,7 @@ namespace Baobab {
             item.rect = Gdk.Rectangle();
 
             items.append(item);
-            return items.last();
+            return item;
         }
 
         protected abstract ChartItem create_chart_item();
@@ -279,12 +281,11 @@ namespace Baobab {
 
             var root_item = add_item(0, 0.0, 1.0, root_path);
 
-            var queue = new Queue<unowned List<ChartItem>>();
+            var queue = new Queue<ChartItem>();
             queue.push_head(root_item);
 
             while (!queue.is_empty()) {
-                var item_link = queue.pop_head();
-                var item = item_link.data;
+                var item = queue.pop_head();
 
                 if (item.results.is_empty) {
                     continue;
@@ -450,9 +451,13 @@ namespace Baobab {
                 if (layout_height < item.rect.height) {
                     cr.set_source_rgba(text_color.red, text_color.green, text_color.blue, text_color.alpha);
                     cr.move_to(item.rect.x + (item.rect.width - layout_width) / 2, item.rect.y + (item.rect.height - layout_height) / 2);
-                    Pango.cairo_show_layout(cr, layout);
+                    PangoCairo.show_layout(cr, layout);
                 }
             }
+        }
+
+        private Pango.Context get_pango_context() {
+            return create_pango_context();
         }
     }
 }
