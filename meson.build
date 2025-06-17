@@ -15,6 +15,7 @@ gtk_dep = dependency('gtk4')
 adwaita_dep = dependency('libadwaita-1')
 gee_dep = dependency('gee-0.8')
 math_dep = meson.get_compiler('c').find_library('m', required: false)
+pangocairo_dep = dependency('pangocairo')
 
 # Configuration
 conf = configuration_data()
@@ -64,7 +65,6 @@ process_monitor_vala_args = [
   '--target-glib', '2.44',
   '--vapidir', meson.current_source_dir() / 'src',
   '--gresources', meson.current_source_dir() / 'data/process-monitor.gresource.xml',
-  '--pkg', 'pangocairo'
 ]
 
 # Dependencies list
@@ -75,7 +75,8 @@ process_monitor_deps = [
   gtk_dep,
   adwaita_dep,
   gee_dep,
-  math_dep
+  math_dep,
+  pangocairo_dep,
 ]
 
 # Executable

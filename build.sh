@@ -1,0 +1,1 @@
+rm -rf builddir && meson setup builddir --reconfigure && ninja -C builddir

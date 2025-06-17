@@ -22,7 +22,7 @@
  * Boston, MA  02110-1301  USA
  */
 
-using PangoCairo;
+using Pango;
 
 namespace Baobab {
 
@@ -451,7 +451,7 @@ namespace Baobab {
                 if (layout_height < item.rect.height) {
                     cr.set_source_rgba(text_color.red, text_color.green, text_color.blue, text_color.alpha);
                     cr.move_to(item.rect.x + (item.rect.width - layout_width) / 2, item.rect.y + (item.rect.height - layout_height) / 2);
-                    PangoCairo.show_layout(cr, layout);
+                    Pango.show_layout(cr, layout);
                 }
             }
         }

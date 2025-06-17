@@ -37,6 +37,11 @@ sudo apt-get install meson valac libgtk-4-dev libadwaita-1-dev libgee-0.8-dev
 
 3. Modifying the build system to include the new files
 
+4. run
+```
+build.sh
+```
+
 ## Next Steps
 
 To complete this project, you would need to:
