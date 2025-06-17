@@ -22,6 +22,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+[CCode (cprefix = "", cheader_filename = "config.h")]
+
 namespace Baobab {
 
     [GtkTemplate (ui = "/org/gnome/baobab/ui/baobab-process-window.ui")]
@@ -73,12 +75,12 @@ namespace Baobab {
             var name_factory = new Gtk.SignalListItemFactory();
             name_factory.setup.connect((factory, list_item) => {
                 var cell = new ProcessCell();
-                list_item.set_child(cell);
+                (list_item as Gtk.ListItem).set_child(cell);
             });
             
             name_factory.bind.connect((factory, list_item) => {
-                var cell = list_item.get_child() as ProcessCell;
-                var tree_list_row = list_item.get_item() as Gtk.TreeListRow;
+                var cell = (list_item as Gtk.ListItem).get_child() as ProcessCell;
+                var tree_list_row = (list_item as Gtk.ListItem).get_child() as Gtk.TreeListRow;
                 var results = tree_list_row != null ? tree_list_row.get_item() as ProcessScanner.Results : null;
                 if (results != null) {
                     cell.update(results);
@@ -92,12 +94,12 @@ namespace Baobab {
             var memory_factory = new Gtk.SignalListItemFactory();
             memory_factory.setup.connect((factory, list_item) => {
                 var cell = new MemoryCell();
-                list_item.set_child(cell);
+                (list_item as Gtk.ListItem).set_child(cell);
             });
             
             memory_factory.bind.connect((factory, list_item) => {
-                var cell = list_item.get_child() as MemoryCell;
-                var tree_list_row = list_item.get_item() as Gtk.TreeListRow;
+                var cell = (list_item as Gtk.ListItem).get_child() as MemoryCell;
+                var tree_list_row = (list_item as Gtk.ListItem).get_child() as Gtk.TreeListRow;
                 var results = tree_list_row != null ? tree_list_row.get_item() as ProcessScanner.Results : null;
                 if (results != null) {
                     cell.update(results);
