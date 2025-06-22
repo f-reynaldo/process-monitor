@@ -1,7 +1,7 @@
 /* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* Baobab - process memory usage analyzer
  *
- * Modified from original baobab-window.vala
+ * Modified from original baobab-application.vala
  * Original copyright:
  * Copyright (C) 2012  Ryan Lortie <desrt@desrt.ca>
  * Copyright (C) 2012  Paolo Borelli <pborelli@gnome.org>
@@ -26,8 +26,7 @@
 
 namespace Baobab {
 
-    [GtkTemplate (ui = "/org/gnome/baobab/ui/baobab-process-window.ui")]
-    public class ProcessWindow : Adw.ApplicationWindow {
+    public class BaobabProcessWindow : Adw.ApplicationWindow {
         [GtkChild]
         private unowned Gtk.EventControllerFocus focus_controller;
         [GtkChild]
@@ -65,7 +64,7 @@ namespace Baobab {
             });
         }
 
-        ~ProcessWindow () {
+        ~BaobabProcessWindow () {
             if (refresh_timeout_id > 0) {
                 Source.remove (refresh_timeout_id);
             }
@@ -194,6 +193,10 @@ namespace Baobab {
     }
 
     private class ProcessMemorySorter : Gtk.Sorter {
+        public override Gtk.SorterOrder get_order() {
+            return Gtk.SorterOrder.NONE;
+        }
+
         public override Gtk.Ordering compare(Object? a, Object? b) {
             var row_a = a as Gtk.TreeListRow;
             var row_b = b as Gtk.TreeListRow;
@@ -217,10 +220,7 @@ namespace Baobab {
                 return Gtk.Ordering.EQUAL;
             }
         }
-
-        public override Gtk.SorterOrder get_order() {
-            return Gtk.SorterOrder.PARTIAL;
-        }
     }
 }
+
 

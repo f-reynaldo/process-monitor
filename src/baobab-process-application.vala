@@ -22,39 +22,53 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Baobab {
-    public class ProcessApplication : Adw.Application {
-        private ProcessWindow window;
+[CCode (cprefix = "", cheader_filename = "config.h")]
 
-        const OptionEntry[] option_entries = {
-            { "version", 'v', 0, OptionArg.NONE, null, N_("Print version information and exit"), null },
-            { null }
-        };
+namespace Baobab {
+
+    public class ProcessApplication : Adw.Application {
+        private BaobabProcessWindow window;
 
         public ProcessApplication () {
-            Object (application_id: "org.gnome.baobab.ProcessMonitor",
-                   flags: ApplicationFlags.FLAGS_NONE);
-
-            add_main_option_entries (option_entries);
+            Object (application_id: "org.gnome.baobab.ProcessMonitor");
+            this.window = new BaobabProcessWindow ();
         }
 
         protected override void activate () {
-            if (window == null) {
-                window = new ProcessWindow ();
-                window.application = this;
-            }
-
             window.present ();
         }
 
-        protected override int handle_local_options (VariantDict options) {
-            if (options.contains ("version")) {
-                print ("%s %s\n", "Process Monitor", Config.VERSION);
-                return 0;
-            }
+        protected override void open (File[] files, string hint) {
+            activate ();
+        }
 
-            return -1;
+        protected override void startup () {
+            base.startup ();
+
+            var about_action = new SimpleAction ("about", null);
+            about_action.activate.connect (() => {
+                var about_dialog = new Adw.AboutWindow ();
+                about_dialog.application_name = "Process Monitor";
+                about_dialog.application_icon = "org.gnome.baobab.ProcessMonitor";
+                about_dialog.developer_name = "F. Reynaldo";
+                about_dialog.version = "1.0";
+                about_dialog.copyright = "Copyright © 2024 F. Reynaldo";
+                about_dialog.website = "https://github.com/f-reynaldo/process-monitor";
+                about_dialog.issue_url = "https://github.com/f-reynaldo/process-monitor/issues";
+                about_dialog.license_type = Gtk.License.GPL_2_0;
+                about_dialog.present ();
+            });
+            add_action (about_action);
+
+            var quit_action = new SimpleAction ("quit", null);
+            quit_action.activate.connect (() => {
+                quit ();
+            });
+            add_action (quit_action);
+
+            set_accels_for_action ("app.quit", { "<Primary>q" });
         }
     }
 }
+
 
