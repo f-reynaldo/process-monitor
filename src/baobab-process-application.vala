@@ -45,20 +45,20 @@ namespace Baobab {
         protected override void startup () {
             base.startup ();
 
-            var about_action = new SimpleAction ("about", null);
-            about_action.activate.connect (() => {
-                var about_dialog = new Adw.AboutWindow ();
-                about_dialog.application_name = "Process Monitor";
-                about_dialog.application_icon = "org.gnome.baobab.ProcessMonitor";
-                about_dialog.developer_name = "F. Reynaldo";
-                about_dialog.version = "1.0";
-                about_dialog.copyright = "Copyright © 2024 F. Reynaldo";
-                about_dialog.website = "https://github.com/f-reynaldo/process-monitor";
-                about_dialog.issue_url = "https://github.com/f-reynaldo/process-monitor/issues";
-                about_dialog.license_type = Gtk.License.GPL_2_0;
-                about_dialog.present ();
-            });
-            add_action (about_action);
+            // var about_action = new SimpleAction ("about", null);
+            // about_action.activate.connect (() => {
+            //     var about_dialog = new Adw.AboutWindow ();
+            //     about_dialog.application_name = "Process Monitor";
+            //     about_dialog.application_icon = "org.gnome.baobab.ProcessMonitor";
+            //     about_dialog.developer_name = "F. Reynaldo";
+            //     about_dialog.version = "1.0";
+            //     about_dialog.copyright = "Copyright © 2024 F. Reynaldo";
+            //     about_dialog.website = "https://github.com/f-reynaldo/process-monitor";
+            //     about_dialog.issue_url = "https://github.com/f-reynaldo/process-monitor/issues";
+            //     about_dialog.license_type = Gtk.License.GPL_2_0;
+            //     about_dialog.present ();
+            // });
+            // add_action (about_action);
 
             var quit_action = new SimpleAction ("quit", null);
             quit_action.activate.connect (() => {
