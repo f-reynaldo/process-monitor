@@ -33,7 +33,7 @@ namespace Baobab {
         [GtkChild] private unowned Gtk.Widget result_page;
         [GtkChild] private unowned Gtk.ColumnView columnview;
         [GtkChild] private unowned Gtk.SingleSelection columnview_selection;
-        [GtkChild] private unowned Baobab.Chart chart;
+        [GtkChild] private unowned Baobab.Ringschart chart;
 
         public BaobabProcessWindow () {
             Object (title: "Process Monitor");
