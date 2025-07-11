@@ -1,4 +1,5 @@
-project('process-monitor', ['c', 'vala'],
+project(
+  'process-monitor', ['c', 'vala'],
   version: '1.0.0',
   meson_version: '>= 0.50.0',
   license: 'GPL2+'
@@ -46,6 +47,7 @@ resources = gnome.compile_resources(
 # VAPI sources
 vapi_sources = [
   'src/config.vapi',
+  'builddir/config.h',
   '/usr/share/vala-0.56/vapi/gio-2.0.vapi' # Adicionado explicitamente para garantir que o Vala encontre o VAPI do gio-2.0
 ]
 

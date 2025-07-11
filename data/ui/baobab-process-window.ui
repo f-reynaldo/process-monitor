@@ -90,7 +90,7 @@
                         <property name="position">250</property>
                         <property name="vexpand">True</property>
                         <child>
-                          <object class="Baobab.Ringschart" id="chart">
+                          <object class="Ringschart" id="chart">
                             <property name="vexpand">True</property>
                           </object>
                         </child>
