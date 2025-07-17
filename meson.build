@@ -44,10 +44,13 @@ resources = gnome.compile_resources(
   dependencies: resource_files
 )
 
-#   vapi_sources = [
-  'src/config.vapi',
+# VAPI sources
+vapi_sources = [
+  'src/config.vapi'
   '/usr/share/vala-0.56/vapi/gio-2.0.vapi' # Adicionado explicitamente para garantir que o Vala encontre o VAPI do gio-2.0
-]ources
+]
+
+# Vala sources
 process_monitor_vala_sources = [
   'src/baobab-chart.vala',
   'src/baobab-ringschart.vala',
@@ -63,7 +66,7 @@ process_monitor_vala_sources = [
 process_monitor_vala_args = [
   '--target-glib', '2.44',
   '--vapidir', meson.current_source_dir() / 'src',
-  '--vapidir', meson.current_source_dir() / 'builddir',
+  '--vapidir', '/usr/share/vala-0.56/vapi',
   '--gresources', meson.current_source_dir() / 'data/process-monitor.gresource.xml',
   '--pkg', 'libadwaita-1',
   '--pkg', 'gio-2.0' # Adicionado para garantir que o Vala encontre o VAPI do gio-2.0
