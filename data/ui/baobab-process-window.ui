@@ -89,9 +89,7 @@
                         <property name="orientation">vertical</property>
                         <property name="position">250</property>
                         <property name="vexpand">True</property>
-                        <child>
-                          <object class="Ringschart" id="chart">
-                            <property name="vexpand">True</property>
+                        <child                          <object class="Ringschart" id="chart">                        <property name="vexpand">True</property>
                           </object>
                         </child>
                         <child>

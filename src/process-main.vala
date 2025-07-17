@@ -20,12 +20,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "config.h"
-
 int main (string[] args) {
-    Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
-    Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-    Intl.textdomain (GETTEXT_PACKAGE);
+    Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.GNOMELOCALEDIR);
+    Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
+    Intl.textdomain (Config.GETTEXT_PACKAGE);
 
     var process_app = new Baobab.ProcessApplication ();
     return process_app.run (args);
