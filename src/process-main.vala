@@ -1,4 +1,7 @@
 /* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+#if !defined(__VALA__) && !defined(VALA_VERSION)
+#include <config.h>
+#endif
 /* Baobab - process memory usage analyzer
  *
  * Modified from original main.vala

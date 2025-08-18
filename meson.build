@@ -24,6 +24,7 @@ conf.set_quoted('PACKAGE_NAME', meson.project_name())
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf.set_quoted('LOCALEDIR', get_option('prefix') / get_option('localedir'))
+conf.set_quoted('GNOMELOCALEDIR', '/usr/local/share/locale')
 
 configure_file(
   output: 'config.h',
@@ -46,7 +47,7 @@ resources = gnome.compile_resources(
 
 # VAPI sources
 vapi_sources = [
-  'src/config.vapi'
+  'src/config.vapi',
   '/usr/share/vala-0.56/vapi/gio-2.0.vapi' # Adicionado explicitamente para garantir que o Vala encontre o VAPI do gio-2.0
 ]
 
